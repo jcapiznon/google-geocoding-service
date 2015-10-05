@@ -53,6 +53,7 @@ Platform.prototype.sendResult = function (result, callback) {
 		};
 
 	setImmediate(function () {
+		if (result === null || result === undefined) result = '{}';
 		if (isString(result) && !isJSON(result)) return callback(new Error('A valid JSON String is required as result.'));
 
 		process.send({
