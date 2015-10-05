@@ -1,32 +1,25 @@
 {
-  "forwork": {
-	"label": "Google for Work",
-	"type": "Boolean",
-	"required": true
-  },
-  "apikey": {
-	"label": "API Key",
+  "key": {
+	"label": "API/Private Key",
 	"type": "String",
-	"required": true
+	"required": true,
+	"help": "Specify your API Key or Private Key."
   },
   "clientid": {
-	"label": "Client ID (Google for Work)",
+	"label": "Client ID",
 	"type": "Number",
-	"required": true
+	"required": false,
+	"help": "If you're using Google for Work, please specify your Client ID."
   },
-  "privatekey": {
-	"label": "Private Key",
-	"type": "Number",
-	"required": true
-  },
-  "proxy": {
-	"label": "Proxy",
-	"type": "Number",
-	"required": false
-  },
-  "isreverse": {
-	"label": "Reverse Geocoding",
-	"type": "Boolean",
-	"required": true
+  "geocodertype": {
+	"label": "Geocoding Type",
+	"type": "String",
+	"select": [
+	  "Forward",
+	  "Reverse"
+	],
+	"required": false,
+	"default": "Reverse",
+	"help": "(Optional) The type of geocoding to be done. Default 'Reverse'."
   }
 }

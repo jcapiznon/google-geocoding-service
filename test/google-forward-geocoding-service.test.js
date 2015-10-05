@@ -1,0 +1,69 @@
+'use strict';
+
+var _      = require('lodash'),
+	cp     = require('child_process'),
+	should = require('should'),
+	service;
+
+describe('Google Forward Geocoding Service', function () {
+	this.slow(5000);
+
+	after('terminate child process', function () {
+		service.kill('SIGKILL');
+	});
+
+	describe('#spawn', function () {
+		it('should spawn a child process', function () {
+			should.ok(service = cp.fork(process.cwd()), 'Child process not spawned.');
+		});
+	});
+
+	describe('#handShake', function () {
+		it('should notify the parent process when ready within 5 seconds', function (done) {
+			this.timeout(5000);
+
+			service.on('message', function (message) {
+				if (message.type === 'ready')
+					done();
+			});
+
+			service.send({
+				type: 'ready',
+				data: {
+					options: {
+						key: 'AIzaSyBCLsiw67avfWlSZ63ncN8d81dRk34nh_g',
+						geocodertype: 'Forward'
+					}
+				}
+			}, function (error) {
+				should.ifError(error);
+			});
+		});
+	});
+
+	describe('#data', function () {
+		it('should process the address and send back the valid latitude and longitude coordinates', function (done) {
+			this.timeout(3000);
+
+			service.on('message', function (message) {
+				if (message.type === 'result') {
+					var data = JSON.parse(message.data);
+
+					console.log(data);
+					should.ok(_.isNumber(data.lat), 'Latitude data invalid.');
+					should.ok(_.isNumber(data.lng), 'Longitude data invalid.');
+					done();
+				}
+			});
+
+			service.send({
+				type: 'data',
+				data: {
+					address: '121, Curtain Road, EC2A 3AD, London UK'
+				}
+			}, function (error) {
+				should.ifError(error);
+			});
+		});
+	});
+});
