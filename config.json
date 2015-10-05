@@ -1,0 +1,32 @@
+{
+  "forwork": {
+	"label": "Google for Work",
+	"type": "Boolean",
+	"required": true
+  },
+  "apikey": {
+	"label": "API Key",
+	"type": "String",
+	"required": true
+  },
+  "clientid": {
+	"label": "Client ID (Google for Work)",
+	"type": "Number",
+	"required": true
+  },
+  "privatekey": {
+	"label": "Private Key",
+	"type": "Number",
+	"required": true
+  },
+  "proxy": {
+	"label": "Proxy",
+	"type": "Number",
+	"required": false
+  },
+  "isreverse": {
+	"label": "Reverse Geocoding",
+	"type": "Boolean",
+	"required": true
+  }
+}
