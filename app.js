@@ -88,13 +88,13 @@ platform.once('ready', function (options) {
 	};
 
 	if (options.clientid) {
-		googleMapsClientConfig.google_client_id = options.clientid;
+		googleMapsClientConfig.google_client_id = options.client_id;
 		googleMapsClientConfig.google_private_key = options.key;
 	}
 	else
 		googleMapsClientConfig.key = options.key;
 
-	geocoderType = options.geocodertype || config.geocodertype.default;
+	geocoderType = options.geocoding_type || config.geocoding_type.default;
 
 	googleMapsClient = new GoogleMaps(googleMapsClientConfig);
 
