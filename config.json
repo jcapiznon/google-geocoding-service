@@ -14,7 +14,7 @@
   "geocodertype": {
 	"label": "Geocoding Type",
 	"type": "String",
-	"select": [
+	"enum": [
 	  "Forward",
 	  "Reverse"
 	],
