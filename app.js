@@ -4,13 +4,13 @@ var _          = require('lodash'),
 	platform   = require('./platform'),
 	GoogleMaps = require('googlemaps'),
 	config     = require('./config.json'),
-	googleMapsClient, geocoderType;
+	googleMapsClient, geocodingType;
 
 /*
  * Listen for the data event.
  */
 platform.on('data', function (data) {
-	if (geocoderType === 'Forward') {
+	if (geocodingType === 'Forward') {
 		var geocodeParams = {
 			address: data.address,
 			language: 'en'
@@ -88,13 +88,13 @@ platform.once('ready', function (options) {
 	};
 
 	if (options.clientid) {
-		googleMapsClientConfig.google_client_id = options.clientid;
+		googleMapsClientConfig.google_client_id = options.client_id;
 		googleMapsClientConfig.google_private_key = options.key;
 	}
 	else
 		googleMapsClientConfig.key = options.key;
 
-	geocoderType = options.geocodertype || config.geocodertype.default;
+	geocodingType = options.geocoding_type || config.geocoding_type.default;
 
 	googleMapsClient = new GoogleMaps(googleMapsClientConfig);
 

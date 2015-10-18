@@ -3,18 +3,18 @@
 	"label": "API/Private Key",
 	"type": "String",
 	"required": true,
-	"help": "Specify your API Key or Private Key."
+	"help": "Google Maps API Key or Private Key."
   },
-  "clientid": {
+  "client_id": {
 	"label": "Client ID",
 	"type": "Number",
 	"required": false,
-	"help": "If you're using Google for Work, please specify your Client ID."
+	"help": "If you're using Google for Work, kindly specify your Client ID."
   },
-  "geocodertype": {
+  "geocoding_type": {
 	"label": "Geocoding Type",
 	"type": "String",
-	"select": [
+	"enum": [
 	  "Forward",
 	  "Reverse"
 	],

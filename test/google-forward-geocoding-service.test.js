@@ -32,7 +32,7 @@ describe('Google Forward Geocoding Service', function () {
 				data: {
 					options: {
 						key: 'AIzaSyBCLsiw67avfWlSZ63ncN8d81dRk34nh_g',
-						geocodertype: 'Forward'
+						geocoding_type: 'Forward'
 					}
 				}
 			}, function (error) {
