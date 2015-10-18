@@ -32,7 +32,7 @@ describe('Google Reverse Geocoding Service', function () {
 				data: {
 					options: {
 						key: 'AIzaSyBCLsiw67avfWlSZ63ncN8d81dRk34nh_g',
-						geocodertype: 'Reverse'
+						geocoding_type: 'Reverse'
 					}
 				}
 			}, function (error) {
