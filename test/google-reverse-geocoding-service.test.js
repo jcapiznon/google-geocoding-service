@@ -58,8 +58,8 @@ describe('Google Reverse Geocoding Service', function () {
 			service.send({
 				type: 'data',
 				data: {
-					lat: 51.1245,
-					lng: -0.0523
+					lat: 14.556978,
+					lng: 121.034352
 				}
 			}, function (error) {
 				should.ifError(error);
