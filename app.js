@@ -31,9 +31,17 @@ platform.on('data', function (data) {
 				platform.sendResult(null);
 			}
 			else {
-				platform.sendResult(JSON.stringify({
+				var result = {
 					lat: _.get(results, 'results[0].geometry.location.lat'),
 					lng: _.get(results, 'results[0].geometry.location.lng')
+				};
+
+				platform.sendResult(JSON.stringify(result));
+
+				platform.log(JSON.stringify({
+					title: 'Google Geocoding Service Result',
+					input: data.address,
+					result: result
 				}));
 			}
 		});
@@ -71,6 +79,15 @@ platform.on('data', function (data) {
 					platform.sendResult(JSON.stringify({
 						address: _.get(results, 'results[0].formatted_address')
 					}));
+
+					platform.log(JSON.stringify({
+						title: 'Google Geocoding Service Result',
+						input: {
+							lat: data.lat,
+							lng: data.lng
+						},
+						result: _.get(results, 'results[0].formatted_address')
+					}));
 				}
 			});
 		}
@@ -98,6 +115,6 @@ platform.once('ready', function (options) {
 
 	googleMapsClient = new GoogleMaps(googleMapsClientConfig);
 
-	platform.log('Google Geocode Service Initialized.');
+	platform.log('Google Geocoding Service Initialized.');
 	platform.notifyReady();
 });
