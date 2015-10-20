@@ -6,30 +6,31 @@ var _          = require('lodash'),
 	config     = require('./config.json'),
 	googleMapsClient, geocodingType;
 
+var _handleException = function (error) {
+	console.error(error);
+	platform.handleException(error);
+	platform.sendResult(null);
+};
+
 /*
  * Listen for the data event.
  */
 platform.on('data', function (data) {
 	if (geocodingType === 'Forward') {
+		if (!_.isString(data.address)) return _handleException(new Error('Invalid address.'));
+
 		var geocodeParams = {
 			address: data.address,
 			language: 'en'
 		};
 
 		googleMapsClient.geocode(geocodeParams, function (error, results) {
-			if (error) {
-				console.error(error);
-				platform.handleException(error);
+			if (error)
+				_handleException(error);
+			else if (results.status === 'ZERO_RESULTS')
 				platform.sendResult(null);
-			}
-			else if (results.status === 'ZERO_RESULTS') {
-				platform.sendResult(null);
-			}
-			else if (results.status !== 'OK') {
-				console.error(results.error_message);
-				platform.handleException(results.error_message);
-				platform.sendResult(null);
-			}
+			else if (results.status !== 'OK')
+				_handleException(new Error(results.error_message));
 			else {
 				var result = {
 					lat: _.get(results, 'results[0].geometry.location.lat'),
@@ -47,12 +48,10 @@ platform.on('data', function (data) {
 		});
 	}
 	else {
-		if (!(_.isNumber(data.lat) && !_.isNaN(data.lat) && _.inRange(data.lat, -90, 90) &&
-			_.isNumber(data.lng) && !_.isNaN(data.lng) && _.inRange(data.lng, -180, 180))) {
+		if (_.isNaN(data.lat) || !_.isNumber(data.lat) || !_.inRange(data.lat, -90, 90) ||
+			_.isNaN(data.lng) || !_.isNumber(data.lng) || !_.inRange(data.lng, -180, 180)) {
 
-			console.error('Latitude (lat) and Longitude (lng) are not valid. lat: ' + data.lat + ' lng:' + data.lng);
-			platform.handleException(new Error('Latitude (lat) and Longitude (lng) are not valid. lat: ' + data.lat + ' lng:' + data.lng));
-			platform.sendResult(null);
+			_handleException(new Error('Latitude (lat) and Longitude (lng) are not valid. lat: ' + data.lat + ' lng:' + data.lng));
 		}
 		else {
 			var reverseGeocodeParams = {
@@ -62,19 +61,12 @@ platform.on('data', function (data) {
 			};
 
 			googleMapsClient.reverseGeocode(reverseGeocodeParams, function (error, results) {
-				if (error) {
-					console.error(error);
-					platform.handleException(error);
+				if (error)
+					_handleException(error);
+				else if (results.status === 'ZERO_RESULTS')
 					platform.sendResult(null);
-				}
-				else if (results.status === 'ZERO_RESULTS') {
-					platform.sendResult(null);
-				}
-				else if (results.status !== 'OK') {
-					console.error(results.error_message);
-					platform.handleException(results.error_message);
-					platform.sendResult(null);
-				}
+				else if (results.status !== 'OK')
+					_handleException(new Error(results.error_message));
 				else {
 					platform.sendResult(JSON.stringify({
 						address: _.get(results, 'results[0].formatted_address')

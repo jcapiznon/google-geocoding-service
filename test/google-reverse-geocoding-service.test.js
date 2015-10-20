@@ -42,7 +42,7 @@ describe('Google Reverse Geocoding Service', function () {
 
 	describe('#data', function () {
 		it('should process the latitude and longitude coordinates and send back a valid address', function (done) {
-			this.timeout(3000);
+			this.timeout(5000);
 
 			service.on('message', function (message) {
 				if (message.type === 'result') {

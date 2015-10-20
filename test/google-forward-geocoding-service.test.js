@@ -43,7 +43,7 @@ describe('Google Forward Geocoding Service', function () {
 
 	describe('#data', function () {
 		it('should process the address and send back the valid latitude and longitude coordinates', function (done) {
-			this.timeout(3000);
+			this.timeout(5000);
 
 			service.on('message', function (message) {
 				if (message.type === 'result') {
