@@ -1,8 +1,9 @@
 'use strict';
 
-var isJSON       = require('is-json'),
+var domain       = require('domain'),
 	inherits     = require('util').inherits,
-	EventEmitter = require('events').EventEmitter;
+	EventEmitter = require('events').EventEmitter,
+	d            = domain.create();
 
 /**
  * Utility function to validate String Objects
@@ -78,7 +79,7 @@ Platform.init = function () {
  */
 Platform.prototype.notifyReady = function (callback) {
 	callback = callback || function () {
-		};
+			};
 
 	setImmediate(function () {
 		process.send({
@@ -93,7 +94,7 @@ Platform.prototype.notifyReady = function (callback) {
  */
 Platform.prototype.notifyClose = function (callback) {
 	callback = callback || function () {
-		};
+			};
 
 	setImmediate(function () {
 		process.send({
@@ -109,16 +110,24 @@ Platform.prototype.notifyClose = function (callback) {
  */
 Platform.prototype.sendResult = function (result, callback) {
 	callback = callback || function () {
-		};
+			};
 
 	setImmediate(function () {
 		if (result === null || result === undefined) result = '{}';
-		if (!isString(result) || !isJSON(result)) return callback(new Error('A valid JSON String is required as result.'));
+		if (!isString(result)) return callback(new Error('A valid JSON String is required as result.'));
 
-		process.send({
-			type: 'result',
-			data: result
-		}, callback);
+		d.on('error', function() {
+			callback(new Error('A valid JSON String is required as result.'));
+		});
+
+		d.run(function() {
+			JSON.parse(result);
+
+			process.send({
+				type: 'result',
+				data: result
+			}, callback);
+		});
 	});
 };
 
@@ -129,7 +138,7 @@ Platform.prototype.sendResult = function (result, callback) {
  */
 Platform.prototype.log = function (data, callback) {
 	callback = callback || function () {
-		};
+			};
 
 	setImmediate(function () {
 		if (!data || !isString(data)) return callback(new Error('A valid log data is required.'));
@@ -148,7 +157,7 @@ Platform.prototype.log = function (data, callback) {
  */
 Platform.prototype.handleException = function (error, callback) {
 	callback = callback || function () {
-		};
+			};
 
 	setImmediate(function () {
 		if (!isError(error)) return callback(new Error('A valid error object is required.'));
