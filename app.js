@@ -1,9 +1,7 @@
 'use strict';
 
-var _          = require('lodash'),
-	platform   = require('./platform'),
-	GoogleMaps = require('googlemaps'),
-	config     = require('./config.json'),
+var _        = require('lodash'),
+	platform = require('./platform'),
 	googleMapsClient, geocodingType;
 
 var _handleException = function (error) {
@@ -97,6 +95,9 @@ platform.on('close', function () {
  * Listen for the ready event.
  */
 platform.once('ready', function (options) {
+	var config     = require('./config.json'),
+		GoogleMaps = require('googlemaps');
+
 	var googleMapsClientConfig = {
 		stagger_time: 1000, // for elevationPath
 		encode_polylines: false,
