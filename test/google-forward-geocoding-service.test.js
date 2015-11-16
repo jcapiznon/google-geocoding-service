@@ -49,7 +49,6 @@ describe('Google Forward Geocoding Service', function () {
 				if (message.type === 'result') {
 					var data = JSON.parse(message.data);
 
-					console.log(data);
 					should.ok(_.isNumber(data.lat), 'Latitude data invalid.');
 					should.ok(_.isNumber(data.lng), 'Longitude data invalid.');
 					done();
