@@ -1,8 +1,8 @@
 'use strict';
 
-var _      = require('lodash'),
-	cp     = require('child_process'),
-	should = require('should'),
+var cp       = require('child_process'),
+	should   = require('should'),
+	isNumber = require('lodash.isnumber'),
 	service;
 
 describe('Google Forward Geocoding Service', function () {
@@ -49,8 +49,8 @@ describe('Google Forward Geocoding Service', function () {
 				if (message.type === 'result') {
 					var data = JSON.parse(message.data);
 
-					should.ok(_.isNumber(data.lat), 'Latitude data invalid.');
-					should.ok(_.isNumber(data.lng), 'Longitude data invalid.');
+					should.ok(isNumber(data.lat), 'Latitude data invalid.');
+					should.ok(isNumber(data.lng), 'Longitude data invalid.');
 					done();
 				}
 			});
