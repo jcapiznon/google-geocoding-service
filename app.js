@@ -1,7 +1,11 @@
 'use strict';
 
-var _        = require('lodash'),
-	platform = require('./platform'),
+var platform = require('./platform'),
+	_get      = require('lodash.get'),
+	_isNaN   = require('lodash.isnan'),
+	inRange  = require('lodash.inrange'),
+	isNumber = require('lodash.isnumber'),
+	isString = require('lodash.isstring'),
 	googleMapsClient, geocodingType;
 
 var _handleException = function (error) {
@@ -15,7 +19,7 @@ var _handleException = function (error) {
  */
 platform.on('data', function (data) {
 	if (geocodingType === 'Forward') {
-		if (!_.isString(data.address)) return _handleException(new Error('Invalid address.'));
+		if (!isString(data.address)) return _handleException(new Error('Invalid address.'));
 
 		var geocodeParams = {
 			address: data.address,
@@ -31,8 +35,8 @@ platform.on('data', function (data) {
 				_handleException(new Error(results.error_message));
 			else {
 				var result = {
-					lat: _.get(results, 'results[0].geometry.location.lat'),
-					lng: _.get(results, 'results[0].geometry.location.lng')
+					lat: _get(results, 'results[0].geometry.location.lat'),
+					lng: _get(results, 'results[0].geometry.location.lng')
 				};
 
 				platform.sendResult(JSON.stringify(result));
@@ -46,8 +50,8 @@ platform.on('data', function (data) {
 		});
 	}
 	else {
-		if (_.isNaN(data.lat) || !_.isNumber(data.lat) || !_.inRange(data.lat, -90, 90) ||
-			_.isNaN(data.lng) || !_.isNumber(data.lng) || !_.inRange(data.lng, -180, 180)) {
+		if (_isNaN(data.lat) || !isNumber(data.lat) || !inRange(data.lat, -90, 90) ||
+			_isNaN(data.lng) || !isNumber(data.lng) || !inRange(data.lng, -180, 180)) {
 
 			_handleException(new Error('Latitude (lat) and Longitude (lng) are not valid. lat: ' + data.lat + ' lng:' + data.lng));
 		}
@@ -67,7 +71,7 @@ platform.on('data', function (data) {
 					_handleException(new Error(results.error_message));
 				else {
 					platform.sendResult(JSON.stringify({
-						address: _.get(results, 'results[0].formatted_address')
+						address: _get(results, 'results[0].formatted_address')
 					}));
 
 					platform.log(JSON.stringify({
@@ -76,7 +80,7 @@ platform.on('data', function (data) {
 							lat: data.lat,
 							lng: data.lng
 						},
-						result: _.get(results, 'results[0].formatted_address')
+						result: _get(results, 'results[0].formatted_address')
 					}));
 				}
 			});
