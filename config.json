@@ -1,7 +1,7 @@
 {
   "key": {
 	"label": "API/Private Key",
-	"type": "String",
+	"type": "Password",
 	"required": true,
 	"help": "Google Maps API Key or Private Key."
   },
