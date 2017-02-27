@@ -25,9 +25,9 @@ _plugin.on('data', (data) => {
       if (error) {
         _plugin.logException(error)
       } else if (results.status === 'ZERO_RESULTS') {
-       _plugin.pipe(data, null)
+        _plugin.pipe(data, null)
       } else if (results.status !== 'OK') {
-        _plugin.logException(new Error(results.error_message))
+        _plugin.logException(new Error(results.errorMessage))
       } else {
         let result = {
           lat: _get(results, 'results[0].geometry.location.lat'),
@@ -45,7 +45,6 @@ _plugin.on('data', (data) => {
           .catch((error) => {
             _plugin.logException(error)
           })
-        console.log(result)
       }
     })
   } else {
@@ -60,12 +59,12 @@ _plugin.on('data', (data) => {
       }
 
       googleMapsClient.reverseGeocode(reverseGeocodeParams, (error, results) => {
-          if (error) {
+        if (error) {
           _plugin.logException(error)
         } else if (results.status === 'ZERO_RESULTS') {
           _plugin.pipe(data, null)
         } else if (results.status !== 'OK') {
-          _plugin.logException(new Error(results.error_message))
+          _plugin.logException(new Error(results.errorMessage))
         } else {
           _plugin.pipe(data, JSON.stringify({
             address: _get(results, 'results[0].formatted_address')
@@ -83,7 +82,6 @@ _plugin.on('data', (data) => {
             .catch((error) => {
               _plugin.logException(error)
             })
-            console.log(results)
         }
       })
     }
@@ -103,8 +101,8 @@ _plugin.once('ready', () => {
   }
 
   if (_plugin.clientId) {
-    googleMapsClientConfig.google_client_id = _plugin.config.clientId
-    googleMapsClientConfig.google_private_key = _plugin.config.key
+    googleMapsClientConfig.googleClientId = _plugin.config.clientId
+    googleMapsClientConfig.googlePrivateKey = _plugin.config.key
   } else {
     googleMapsClientConfig.key = _plugin.config.key
   }
