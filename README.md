@@ -17,7 +17,7 @@ __Input Data__
 
 __Output Data__
 
-The latitude and longitude coordinate pair that corresponds to the given address. Sample below. 
+The latitude and longitude coordinate pair that corresponds to the given address. Sample below.
 
 ```javascript
 {

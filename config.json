@@ -5,13 +5,13 @@
 	"required": true,
 	"help": "Google Maps API Key or Private Key."
   },
-  "client_id": {
+  "clientId": {
 	"label": "Client ID",
 	"type": "Number",
 	"required": false,
 	"help": "If you're using Google for Work, kindly specify your Client ID."
   },
-  "geocoding_type": {
+  "geocodingType": {
 	"label": "Geocoding Type",
 	"type": "String",
 	"enum": [

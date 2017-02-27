@@ -1,71 +1,56 @@
-'use strict';
+'use strict'
 
-var cp       = require('child_process'),
-	should   = require('should'),
-	isNumber = require('lodash.isnumber'),
-	service;
+const amqp = require('amqplib')
 
-describe('Google Forward Geocoding Service', function () {
-	this.slow(8000);
+let _app = null
+let _channel = null
+let _conn = null
 
-	after('terminate child process', function () {
-		service.kill('SIGKILL');
-	});
+describe('Google Geocoding Service Forward', function () {
+  this.slow(5000)
 
-	describe('#spawn', function () {
-		it('should spawn a child process', function () {
-			should.ok(service = cp.fork(process.cwd()), 'Child process not spawned.');
-		});
-	});
+  before('init', () => {
+    process.env.OUTPUT_PIPES = 'Op1,Op2'
+    process.env.LOGGERS = 'logger1,logger2'
+    process.env.EXCEPTION_LOGGERS = 'exlogger1,exlogger2'
+    process.env.BROKER = 'amqp://guest:guest@127.0.0.1/'
+    process.env.CONFIG = '{"key": "AIzaSyBCLsiw67avfWlSZ63ncN8d81dRk34nh_g", "geocodingType": "Forward"}'
+    process.env.INPUT_PIPE = 'demo.pipe.service'
+    process.env.OUTPUT_SCHEME = 'RESULT'
+    process.env.OUTPUT_NAMESPACE = 'RESULT'
+    process.env.ACCOUNT = 'demo account'
 
-	describe('#handShake', function () {
-		it('should notify the parent process when ready within 8 seconds', function (done) {
-			this.timeout(8000);
+    amqp.connect(process.env.BROKER)
+      .then((conn) => {
+        _conn = conn
+        return conn.createChannel()
+      }).then((channel) => {
+      _channel = channel
+    }).catch((err) => {
+      console.log(err)
+    })
+  })
 
-			service.on('message', function (message) {
-				if (message.type === 'ready')
-					done();
-			});
+  after('terminate child process', function (done) {
+    _conn.close()
+    done()
+  })
 
-			service.send({
-				type: 'ready',
-				data: {
-					options: {
-						key: 'AIzaSyBCLsiw67avfWlSZ63ncN8d81dRk34nh_g',
-						geocoding_type: 'Forward'
-					}
-				}
-			}, function (error) {
-				should.ifError(error);
-			});
-		});
-	});
+  describe('#start', function () {
+    it('should start the app', function (done) {
+      this.timeout(8000)
+      _app = require('../app')
+      _app.once('init', done)
+    })
+  })
 
-	describe('#data', function () {
-		it('should process the address and send back the valid latitude and longitude coordinates', function (done) {
-			this.timeout(5000);
-			var requestId = (new Date()).getTime().toString();
+  describe('#data', () => {
+    it('should process the data and send back a result', function (done) {
+      this.timeout(11000)
+      let dummyData = { 'address': '121, Curtain Road, EC2A 3AD, London UK' }
+      _channel.sendToQueue('demo.pipe.service', new Buffer(JSON.stringify(dummyData)))
 
-			service.on('message', function (message) {
-				if (message.type === 'result') {
-					var data = JSON.parse(message.data);
-
-					should.ok(isNumber(data.lat), 'Latitude data invalid.');
-					should.ok(isNumber(data.lng), 'Longitude data invalid.');
-					should.equal(message.requestId, requestId);
-					done();
-				}
-			});
-
-			service.send({
-				type: 'data',
-				requestId: requestId,
-				data: {
-					address: '121, Curtain Road, EC2A 3AD, London UK'
-				}
-			}, function (error) {
-				should.ifError(error);
-			});
-		});
-	});
-});
+      setTimeout(done, 10000)
+    })
+  })
+})
