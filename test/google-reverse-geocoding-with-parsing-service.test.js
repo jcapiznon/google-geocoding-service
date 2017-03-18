@@ -31,7 +31,8 @@ describe('Google Reverse Geocoding Service', function () {
 				data: {
 					options: {
 						key: 'AIzaSyBCLsiw67avfWlSZ63ncN8d81dRk34nh_g',
-						geocoding_type: 'Reverse'
+						geocoding_type: 'Reverse',
+						parse_address: true
 					}
 				}
 			}, function (error) {
@@ -48,8 +49,15 @@ describe('Google Reverse Geocoding Service', function () {
 			service.on('message', function (message) {
 				if (message.type === 'result') {
 					var data = JSON.parse(message.data);
+					console.log(data);
 
-					should.ok(data.address, 'Address missing.');
+					should.ok(data.address, 'Address is missing.');
+					should.ok(data.address.full_address, 'Full Address is missing.');
+					should.ok(data.address.street_address, 'Street Address is missing.');
+					should.ok(data.address.city, 'City is missing.');
+					should.ok(data.address.state, 'State is missing.');
+					should.ok(data.address.postal_code, 'Postal Code is missing.');
+					should.ok(data.address.country, 'Country is missing.');
 					should.equal(message.requestId, requestId);
 					done();
 				}
@@ -59,8 +67,8 @@ describe('Google Reverse Geocoding Service', function () {
 				type: 'data',
 				requestId: requestId,
 				data: {
-					lat: 14.556978,
-					lng: 121.034352
+					lat: -34.016494,
+					lng: 151.258942
 				}
 			}, function (error) {
 				should.ifError(error);

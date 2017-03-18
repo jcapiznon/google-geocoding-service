@@ -4,9 +4,11 @@ var platform = require('./platform'),
 	_get     = require('lodash.get'),
 	_isNaN   = require('lodash.isnan'),
 	inRange  = require('lodash.inrange'),
+	forEach  = require('lodash.foreach'),
+	isEmpty  = require('lodash.isempty'),
 	isNumber = require('lodash.isnumber'),
 	isString = require('lodash.isstring'),
-	googleMapsClient, geocodingType;
+	googleMapsClient, geocodingType, parseAddress;
 
 var _handleException = function (requestId, error) {
 	platform.sendResult(requestId, null);
@@ -59,8 +61,7 @@ platform.on('data', function (requestId, data) {
 		else {
 			var reverseGeocodeParams = {
 				latlng: data.lat + ',' + data.lng,
-				language: 'en',
-				location_type: 'APPROXIMATE'
+				language: 'en'
 			};
 
 			googleMapsClient.reverseGeocode(reverseGeocodeParams, function (error, results) {
@@ -71,8 +72,52 @@ platform.on('data', function (requestId, data) {
 				else if (results.status !== 'OK')
 					_handleException(requestId, new Error(results.error_message));
 				else {
+					var result;
+
+					if (parseAddress) {
+						result = {
+							full_address: _get(results, 'results[0].formatted_address'),
+							street_address: '',
+							city: '',
+							state: '',
+							postal_code: '',
+							country: ''
+						};
+
+						forEach(_get(results, 'results[0].address_components'), function (component) {
+							switch (component.types[0]) {
+								case 'postal_code':
+									result.postal_code = component.short_name;
+									break;
+								case 'street_address':
+									result.street_address = result.street_address.concat(component.short_name);
+									break;
+								case 'route':
+									result.street_address = (isEmpty(result.street_address)) ? result.street_address.concat(component.short_name) : result.street_address.concat(' ' + component.short_name);
+									break;
+								case 'neighborhood':
+									result.street_address = (isEmpty(result.street_address)) ? result.street_address.concat(component.short_name) : result.street_address.concat(' ' + component.short_name);
+									break;
+								case 'administrative_area_level_1':
+									result.state = component.short_name;
+									break;
+								case 'locality':
+									result.city = component.short_name;
+									break;
+								case 'ward':
+									result.city = component.short_name;
+									break;
+								case 'country':
+									result.country = component.short_name;
+									break;
+							}
+						});
+					}
+					else
+						result = _get(results, 'results[0].formatted_address');
+
 					platform.sendResult(requestId, JSON.stringify({
-						address: _get(results, 'results[0].formatted_address')
+						address: result
 					}));
 
 					platform.log(JSON.stringify({
@@ -81,7 +126,7 @@ platform.on('data', function (requestId, data) {
 							lat: data.lat,
 							lng: data.lng
 						},
-						result: _get(results, 'results[0].formatted_address')
+						result: result
 					}));
 				}
 			});
@@ -102,6 +147,8 @@ platform.on('close', function () {
 platform.once('ready', function (options) {
 	var config     = require('./config.json'),
 		GoogleMaps = require('googlemaps');
+
+	parseAddress = (options.parse_address === true);
 
 	var googleMapsClientConfig = {
 		stagger_time: 1000, // for elevationPath
