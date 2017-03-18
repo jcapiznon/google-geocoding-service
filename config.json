@@ -21,5 +21,12 @@
 	"required": false,
 	"default": "Reverse",
 	"help": "(Optional) The type of geocoding to be done. Default 'Reverse'."
+  },
+  "parse_address": {
+	"label": "Parse Address",
+	"type": "Boolean",
+	"required": false,
+	"default": false,
+	"help": "Parse address when doing reverse geocoding. Outputs street address, city, state, postal code and country."
   }
 }
