@@ -96,7 +96,7 @@ _plugin.once('ready', () => {
     encodePolylines: false,
     secure: true // use https
   }
-  
+
   if (_plugin.clientId) {
     googleMapsClientConfig.googleClientId = _plugin.config.clientId
     googleMapsClientConfig.googlePrivateKey = _plugin.config.key

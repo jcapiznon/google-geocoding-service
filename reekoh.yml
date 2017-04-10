@@ -1,0 +1,46 @@
+---
+version: 1.0.0
+kind: Plugin
+metadata:
+  name: google-geocoding-service
+  description: Google Geocoding API Service Plugin for the Reekoh IoT platform. Integrates a Reekoh instance to Google's Geocoding API to do reverse and forward geocoding.
+  documentation: ./README.md
+  icon: ./google.png
+  signupLink:
+  type: Service
+  price: 0
+  tags:
+    - microsoft
+    - project oxford
+    - cognitive
+  release:
+    version: 1.0.0
+    notes: path/to/RELEASENOTESv1.0.0.md
+    image: path/to/docker/image
+    config:
+        key:
+          label: API/Private Key
+          type: Password
+          required: true
+          help: Google Maps API Key or Private Key.
+        clientId:
+          label: Client ID
+          type: Number
+          required: false
+          help: If you're using Google for Work, kindly specify your Client ID.
+        geocodingType:
+          label: Geocoding Type
+          type: String
+          enum:
+          - Forward
+          - Reverse
+          required: false
+          default: Reverse
+          help: "(Optional) The type of geocoding to be done. Default 'Reverse'."
+          maxLength: 1000
+        parse_address:
+          label: Parse Address
+          type: Boolean
+          required: false
+          default: false
+          help: Parse address when doing reverse geocoding. Outputs street address, city, state, postal code and country.
