@@ -9,24 +9,27 @@
   "author": "Reekoh, Inc.",
   "license": "GPL-3.0",
   "dependencies": {
-    "reekoh": "^1.0.1",
-    "googlemaps": "^1.0.2",
-    "lodash.get": "^4.2.1",
-    "lodash.inrange": "^3.3.2",
-    "lodash.isnan": "^3.0.0",
+    "reekoh": "^1.2.",
+    "googlemaps": "^1.12.0",
+    "lodash.foreach": "^4.5.0",
+    "lodash.get": "^4.4.2",
+    "lodash.inrange": "^3.3.6",
+    "lodash.isempty": "^4.4.0",
+    "lodash.isnan": "^3.0.2",
     "lodash.isnumber": "^3.0.3",
-    "lodash.isstring": "^3.0.1"
+    "lodash.isstring": "^4.0.1"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
-    "gulp-cli": "^1.2.1",
-    "gulp-jshint": "^2.0.1",
+    "gulp-cli": "^1.2.2",
+    "gulp-jshint": "^2.0.4",
     "gulp-json-lint": "^0.1.0",
-    "gulp-mocha": "^2.2.0",
+    "gulp-mocha": "^4.1.0",
     "gulp-plumber": "^1.1.0",
     "gulp-standard": "^8.0.4",
     "jshint": "^2.9.4",
     "mocha": "^2.5.3",
-    "should": "^9.0.2"
+    "jshint": "^2.9.4",
+    "should": "^11.2.1"
   }
 }

@@ -88,9 +88,6 @@ _plugin.on('data', (data) => {
   }
 })
 
-/**
- * Emitted when the platform bootstraps the plugin. The plugin should listen once and execute its init process.
- */
 _plugin.once('ready', () => {
   const GoogleMaps = require('googlemaps')
 
@@ -99,7 +96,7 @@ _plugin.once('ready', () => {
     encodePolylines: false,
     secure: true // use https
   }
-
+  
   if (_plugin.clientId) {
     googleMapsClientConfig.googleClientId = _plugin.config.clientId
     googleMapsClientConfig.googlePrivateKey = _plugin.config.key
